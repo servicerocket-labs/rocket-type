@@ -18,6 +18,7 @@ const piesocket = window.piesocket = {
     },
 
     send: (event, data) => {
+        // console.log(event, data);
         if (socket == null)
             return;
 
@@ -32,13 +33,13 @@ const piesocket = window.piesocket = {
 async function connect(config, cid) {
     const apiKey = config.piesocket_apikey;
     const channelId = cid || 8080;
+    const _connectBtn = document.getElementById('connectBtn');
 
     socket = new WebSocket(`wss://connect.websocket.in/v3/${channelId}?api_key=${apiKey}`);
 
     socket.onopen = () => {
         console.log('connected to piesocket!');
         
-        const _connectBtn = document.getElementById('connectBtn');
         _connectBtn.classList.remove('btn-secondary');
         _connectBtn.classList.add('btn-success');
         _connectBtn.setAttribute('disabled', true);
@@ -50,16 +51,19 @@ async function connect(config, cid) {
             event: 'join',
             sender: username,
         }));
-    }
+    };
 
     socket.onmessage = (message) => {
         var payload = JSON.parse(message.data);
-        console.log(payload);
-    
-        if (payload.sender == username) {
-            payload.sender = 'You';
-        }
+        if (payload.error) {
+            alert(payload.error);
 
+            _connectBtn.classList.remove('btn-success');
+            _connectBtn.classList.add('btn-secondary');
+
+            socket.close();
+            return;
+        }
         console.log(payload);
-    }
+    };
 };

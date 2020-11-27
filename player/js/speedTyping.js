@@ -151,6 +151,8 @@ class speedTyping {
         // Display total words counter
         _totalWords.textContent = quoteWords;
 
+        piesocket.send('start', { quote: this.quote, level: _level.value });
+
         // Set the timer
         this.timer();
         // Set active class to Play btn
@@ -243,7 +245,15 @@ class speedTyping {
                 if (this.accuracyIndex > 0 && Number.isInteger(this.accuracyIndex)) 
                     _accuracy.innerHTML = `${this.accuracyIndex}<span class="small">%</span>`;
 
-                throttleStats({ rawcpm: rawcpm, cpm: this.cpm, wpm: this.wpm, accuracy: this.accuracyIndex })
+                throttleStats({
+                    rawcpm: rawcpm,
+                    cpm: this.cpm,
+                    wpm: this.wpm,
+                    accuracy: this.accuracyIndex,
+                    seconds: this.seconds,
+                    typedIndex: this.index,
+                    quoteLength: this.quote.length,
+                });
             });
         }
     }
@@ -267,6 +277,16 @@ class speedTyping {
         // Show the tested quote
         inputFull.innerHTML = `&#8220;${this.quote}&#8221; <span class="d-block small text-muted text-right pr-3">&ndash; ${this.author}</span></div> `;
         // Completely stop
+
+        // Send results
+        const rawcpm  = Math.floor(this.index / this.seconds * 60);            
+        piesocket.send('stop', {
+            rawcpm: rawcpm,
+            cpm: this.cpm,
+            wpm: this.wpm,
+            accuracy: this.accuracyIndex,
+        });
+
         return;
     }
 
@@ -324,11 +344,7 @@ class speedTyping {
         // Repeat the test btn
         modalReload.addEventListener('click', () => location.reload());
         // Save the wpm values values to localStorage        
-        localStorage.setItem('WPM', wpm);
-
-        // Send results
-        const rawcpm  = Math.floor(this.index / this.seconds * 60);            
-        piesocket.send('finish', { rawcpm: rawcpm, cpm: this.cpm, wpm: this.wpm, accuracy: this.accuracyIndex });
+        // localStorage.setItem('WPM', wpm);
     }
 }
 // Init the class
@@ -340,5 +356,5 @@ btnPaly.addEventListener('click', () => typingTest.start());
 btnRefresh.addEventListener('click', () => location.reload());
 
 // Save last wpm result to Local storage
-const savedWPM = localStorage.getItem('WPM') || 0;
-select('#result').innerHTML = `<li>${savedWPM}</li>`;
+// const savedWPM = localStorage.getItem('WPM') || 0;
+// select('#result').innerHTML = `<li>${savedWPM}</li>`;
