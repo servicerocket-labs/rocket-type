@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Speed Typing Admin</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src='js/piesocket.js'></script>
+</head>
+<body>
+    <div class="jumbotron text-center">
+        <h1>ServiceRocket</h1>
+        <p>RocketType Championship 2020!</p>
+    </div>
+
+    <div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>Player 1</h3>
+            <span>Progress</span>
+            <div class="progress">
+                <div id="p1Progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                0%
+                </div>
+            </div>
+            <dl class="row">
+                <dt class="col-sm-4">rawcpm</dt>
+                <dd class="col-sm-8" id="p1RawCpm">0</dd>
+
+                <dt class="col-sm-4">cpm</dt>
+                <dd class="col-sm-8" id="p1Cpm">0</dd>
+
+                <dt class="col-sm-4">wpm</dt>
+                <dd class="col-sm-8" id="p1Wpm">0</dd>
+
+                <dt class="col-sm-4">accuracy</dt>
+                <dd class="col-sm-8" id="p1Accuracy">0</dd>
+
+                <dt class="col-sm-4">time</dt>
+                <dd class="col-sm-8" id="p1Time">60</dd>
+            </dl>
+
+            <span><b>Preview</b></span>
+            <pre id="p1Preview" style="height: 150px; white-space: pre-wrap;"><span id="p1PreviewDone" class="text-danger"></span><span id="p1PreviewText" class="text-muted"></span></pre>
+
+            <span><b>Logs</b></span>
+            <pre id="p1Logs" style="height:150px"></pre>
+            
+            <span><b>Channel</b></span>
+            <div class="input-group">
+                <input type="text" id="p1Channel" class="form-control" placeholder="Channel Id (1-100000)">
+                <div class="input-group-btn">
+                <button id="p1Btn" class="btn btn-default" onclick="piesocket.connect('p1')">Connect</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <h3>Player 2</h3>
+            <span>Progress</span>
+            <div class="progress">
+                <div id="p2Progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                0%
+                </div>
+            </div>
+            <dl class="row">
+                <dt class="col-sm-4">rawcpm</dt>
+                <dd class="col-sm-8" id="p2RawCpm">0</dd>
+
+                <dt class="col-sm-4">cpm</dt>
+                <dd class="col-sm-8" id="p2Cpm">0</dd>
+
+                <dt class="col-sm-4">wpm</dt>
+                <dd class="col-sm-8" id="p2Wpm">0</dd>
+
+                <dt class="col-sm-4">accuracy</dt>
+                <dd class="col-sm-8" id="p2Accuracy">0</dd>
+
+                <dt class="col-sm-4">time</dt>
+                <dd class="col-sm-8" id="p2Time">60</dd>
+            </dl>
+
+            <span><b>Preview</b></span>
+            <pre id="p2Preview" style="height: 150px; white-space: pre-wrap;"><span id="p2PreviewDone" class="text-danger"></span><span id="p2PreviewText" class="text-muted"></span></pre>
+
+            <span><b>Logs</b></span>
+            <pre id="p2Logs" style="height:150px"></pre>
+            
+            <span><b>Channel</b></span>
+            <div class="input-group">
+                <input type="text" id="p2Channel" class="form-control" placeholder="Channel Id (1-100000)">
+                <div class="input-group-btn">
+                <button id="p2Btn" class="btn btn-default" onclick="piesocket.connect('p2')">Connect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
