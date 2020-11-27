@@ -19,4 +19,4 @@ http-server
 
 To launch the website use the following link.
 - player page: `http://localhost:8080/player`
-- admin page: `http://localhost:8080/admin`
+- admin page: `http://localhost:8080/dashboard`
