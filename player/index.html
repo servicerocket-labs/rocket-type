@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+    <script src="../../piesocket.js"></script>
     <title>Typing Speed Test</title>
 </head>
 
@@ -38,6 +39,9 @@
                         <li class="list-item">WPM <span id="wpm" class="d-block stats">0</span></li>
                         <hr class="hr-x">
                         <li class="list-item last-result">Last WPM <span id="result" class="d-block stats text-success">0</span></li>
+                        <hr class="hr-x">
+                        <li class=list-item><span id="channelId" class="d-block stats"></span></li>
+                        <li class="list-item"><button id="connectBtn" class="btn btn-secondary" onclick="piesocket.connect()">Connect</button></li>
                     </ul>
 
                 </div>
@@ -190,7 +194,8 @@
             <audio id="keyBeep" src="sound/beep.wav" hidden></audio>
 
     </section>
-    <script src="js/speedTyping.min.js"></script>
+
+    <script src="js/speedTyping.js"></script>
 </body>
 
 </html>
