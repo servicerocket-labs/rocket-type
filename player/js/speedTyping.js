@@ -62,6 +62,28 @@ fetch('js/quotes.json')
 // Function to return random key from an array
 const random = array => array[Math.floor(Math.random() * array.length)];
 
+// Throttle to reduce socket send rate
+const throttle = (func, limit) => {
+    let lastFunc
+    let lastRan
+    return function() {
+      const context = this
+      const args = arguments
+      if (!lastRan) {
+        func.apply(context, args)
+        lastRan = Date.now()
+      } else {
+        clearTimeout(lastFunc)
+        lastFunc = setTimeout(function() {
+          if ((Date.now() - lastRan) >= limit) {
+            func.apply(context, args)
+            lastRan = Date.now()
+          }
+        }, limit - (Date.now() - lastRan))
+      }
+    }
+  }
+
 // speedTyping Class
 class speedTyping {
 
@@ -75,6 +97,7 @@ class speedTyping {
         this.wpm            = 0;        // WPM cpm / 5 
         this.interval       = null;     // interval counter
         this.duration       = 60        // Test duration time (60 seconds)
+        this.seconds        = 0;        // The currect time since start timer
         this.typing         = false;    // To check if we are typing
         this.quote          = [];       // Quotes array
         this.author         = [];       // Authors array
@@ -96,6 +119,8 @@ class speedTyping {
         this.interval = setInterval(() => {
             // Get seconds left. Note that we ran Date.now() again to update the time
             const secondsLeft = Math.round((done - Date.now()) / 1000);
+            this.seconds = this.duration - secondsLeft;
+
             // Display the timer in DOM again 
             _timer.innerHTML = `${secondsLeft}<span class="small">s</span>`;
             // Stop when reach 0 and call finish function
@@ -110,7 +135,9 @@ class speedTyping {
     start() {
         
         // Filter out not 'easy' quotes. Later we could make difficulty levels?
-        const filterdQuotes = allQuotes.filter(item => item.level !== 'Easy');
+        const _level = document.getElementById('level');
+        const filterdQuotes = allQuotes.filter(item => item.level === _level.value);
+
         // Get Authors / Quotes only
         const getQuote  = filterdQuotes.map(item => item.quote);
         const getAuthor = filterdQuotes.map(item => item.author);
@@ -124,7 +151,7 @@ class speedTyping {
         // Display total words counter
         _totalWords.textContent = quoteWords;
 
-        // Set the timer 
+        // Set the timer
         this.timer();
         // Set active class to Play btn
         btnPlay.classList.add('active');
@@ -141,6 +168,11 @@ class speedTyping {
 
             // Display the quotes in the input div
             input.textContent = this.quote;
+
+            // set debouncer
+            const throttleStats = throttle((data) => {
+                piesocket.send('progress', data);
+            }, 1000);
 
             // Start the event listener
             input.addEventListener('keypress', event => {
@@ -197,9 +229,9 @@ class speedTyping {
                         keyBeep.play();
                     }
                 }
-                //const rawcpm  = Math.floor(this.index / this.seconds * 60);
                 // CPM counter
-                this.cpm = this.correctIndex > 5 ? Math.floor(this.correctIndex / this.duration * 60) : 0;
+                const rawcpm  = Math.floor(this.index / this.seconds * 60);
+                this.cpm = this.correctIndex > 5 ? Math.floor(this.correctIndex / this.seconds * 60) : 0;
                 // Add to the dom
                 _cpm.textContent = this.cpm;
                 // WPM: (correct chars / total time * 60 / 5)
@@ -211,6 +243,7 @@ class speedTyping {
                 if (this.accuracyIndex > 0 && Number.isInteger(this.accuracyIndex)) 
                     _accuracy.innerHTML = `${this.accuracyIndex}<span class="small">%</span>`;
 
+                throttleStats({ rawcpm: rawcpm, cpm: this.cpm, wpm: this.wpm, accuracy: this.accuracyIndex })
             });
         }
     }
@@ -292,6 +325,10 @@ class speedTyping {
         modalReload.addEventListener('click', () => location.reload());
         // Save the wpm values values to localStorage        
         localStorage.setItem('WPM', wpm);
+
+        // Send results
+        const rawcpm  = Math.floor(this.index / this.seconds * 60);            
+        piesocket.send('finish', { rawcpm: rawcpm, cpm: this.cpm, wpm: this.wpm, accuracy: this.accuracyIndex });
     }
 }
 // Init the class
