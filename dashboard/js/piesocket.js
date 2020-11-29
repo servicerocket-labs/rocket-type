@@ -18,6 +18,10 @@ const piesocket = window.piesocket = {
             .then(() => alert(player + ' is connected!'))
             .catch(error => console.error('Error:', error));
     },
+    sendQuote: () => {
+        sendQuote('p1');
+        sendQuote('p2');
+    },
 };
 
 function isConnect(player) {
@@ -124,3 +128,15 @@ async function connect(config, cid, player) {
 
     }
 };
+
+function sendQuote(player) {
+    if (!isConnect(player))
+        return;
+
+    const _quote = document.getElementById('allQuote');
+    players[player].socket.send(JSON.stringify({
+        event: 'quote',
+        text: _quote.value,
+        author: 'ServiceRocket Challenge',
+    }));
+}

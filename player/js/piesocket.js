@@ -16,7 +16,6 @@ const piesocket = window.piesocket = {
             .then(data => connect(data, channelId))
             .catch(error => console.error('Error:', error));
     },
-
     send: (event, data) => {
         // console.log(event, data);
         if (socket == null)
@@ -27,6 +26,11 @@ const piesocket = window.piesocket = {
             sender: username,
             data: data,
         }));
+    },
+    resetQuote: () => {
+        const _quoteBtn = document.getElementById('quoteBtn');
+        _quoteBtn.classList.add('d-none');
+        delete window.quote;
     },
 };
 
@@ -54,7 +58,9 @@ async function connect(config, cid) {
     };
 
     socket.onmessage = (message) => {
-        var payload = JSON.parse(message.data);
+        const payload = JSON.parse(message.data);
+        const _quoteBtn = document.getElementById('quoteBtn');
+
         if (payload.error) {
             alert(payload.error);
 
@@ -65,5 +71,13 @@ async function connect(config, cid) {
             return;
         }
         console.log(payload);
+
+        if (payload.event == 'quote') {
+            _quoteBtn.classList.remove('d-none');
+            window.quote = {
+                text: payload.text,
+                author: payload.author,
+            };
+        }
     };
 };

@@ -146,6 +146,12 @@ class speedTyping {
         this.author = random(getAuthor);
         // Get random quotes
         this.quote  = random(getQuote);
+
+        if (window.quote != null) {
+            this.quote = window.quote.text;
+            this.author = window.quote.author;
+        }
+
         // Count how many words in a single quote by splitting the array by whitespaces
         const quoteWords = this.quote.split(' ').filter(i => i).length;
         // Display total words counter
