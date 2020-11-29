@@ -8,12 +8,23 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono&family=Hind+Madurai" rel="stylesheet">
     <script src="js/piesocket.js"></script>
     <title>Typing Speed Test</title>
+
+    <style>
+        body {
+            font-family: 'Hind Madurai';
+        }
+    </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg bg-dark">
+        <a class="navbar-brand" href="https://www.servicerocket.com">
+            <img id="logo" src="img/logo.svg" />
+        </a>
+    </nav>
     <section class="mt-4 p-4">
         <div class="row">
             <div class="col-sm-6 col-md-2 order-md-0">
@@ -56,7 +67,13 @@
             </div>
             <div class="col-sm-12 col-md-8 order-md-1">
                 <div class="container">
+
                     <div class="header text-center mt-4">
+
+                        <div>
+                            <img src="img/banner.png" />
+                        </div>
+
                         <p class="info lead">How fast is your typing?<br>Click on the <strong>start</strong> button
                             below to start the one-minute typing test and find out!
                         </p>
@@ -73,7 +90,7 @@
                                         <path d="M19.7,40c-11,0-20-9-20-20s9-20,20-20s20,9,20,20S30.7,40,19.7,40z M19.7,2c-9.9,0-18,8.1-18,18s8.1,18,18,18s18-8.1,18-18   S29.6,2,19.7,2z" />
                                     </g>
                                 </svg>
-                                <span class="d-block x-small text-muted pt-1">start</span>
+                                <span class="d-block buttonText text-muted pt-1">Start</span>
                             </button>
                             <button id="btnRefresh" class="btn-control">
                                 <svg enable-background="new 0 0 40 40" id="iconRefresh" class="control-icon icon-refresh"
@@ -86,7 +103,7 @@
                                         <path d="M30.5,20c0,0.6-0.4,1-1,1c-0.5,0-1-0.4-1-1c0-4.7-3.8-8.6-8.5-8.6c-4.7,0-8.5,3.8-8.5,8.6c0,4.7,3.8,8.6,8.5,8.6l-1.7-1.7   c-0.4-0.4-0.4-1,0-1.4c0.4-0.4,1-0.4,1.4,0l3.1,3.1l0.2,0.1l0.2,0.2c0.2,0.2,0.3,0.4,0.3,0.7c0,0.3-0.1,0.5-0.3,0.7l-3.4,3.4   C19.5,33.9,19.2,34,19,34s-0.5-0.1-0.7-0.3c-0.4-0.4-0.4-1,0-1.4l1.7-1.7c-5.8,0-10.5-4.7-10.5-10.6S14.2,9.4,20,9.4   S30.5,14.2,30.5,20z" />
                                     </g>
                                 </svg>
-                                <span class="d-block x-small text-muted pt-1">Refresh</span>
+                                <span class="d-block buttonText text-muted pt-1">Refresh</span>
                             </button>
                         </div>
                     </div>
@@ -103,14 +120,16 @@
 
 
                     <hr class="hr-x">
-                    <h6 class="px-3">Tip!</h6>
-                    <ul>
-                        <li>Word Per Minute (WPM) is measured by calculating how many words you can type in 1 minute.</li>
-                        <li>Character Per Minute (CPM) calculates how many characters are typed per minute.</li>
-                        <li>The top typing speed was achieved by <a href="https://en.wikipedia.org/wiki/Typing#Alphanumeric_entry"
-                                target="_blank">Stella Pajunas</a> in 1946, whereas Mrs. Barbara Blackburn has averaged
-                            150 wpm in 50 minutes and her top speed was 212 wpm.</li>
-                    </ul>
+                    <div class="alert alert-primary" role="alert">
+                        <h6>Tips</h6>
+                        <ul>
+                            <li>Word Per Minute (WPM) is measured by calculating how many words you can type in 1 minute.</li>
+                            <li>Character Per Minute (CPM) calculates how many characters are typed per minute.</li>
+                            <li>The top typing speed was achieved by <a href="https://en.wikipedia.org/wiki/Typing#Alphanumeric_entry"
+                                    target="_blank">Stella Pajunas</a> in 1946, whereas Mrs. Barbara Blackburn has averaged
+                                150 wpm in 50 minutes and her top speed was 212 wpm.</li>
+                        </ul>
+                    </div>
                     <hr class="mt-5">
                     <div title="Average typing speed" class="my-4">
                         <h6 class="py-2">Average typing speed</h6>
