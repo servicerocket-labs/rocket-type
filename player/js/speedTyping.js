@@ -28,9 +28,9 @@ const _writtenWords = select('#writtenWords');
 const modal         = select('#ModalCenter');
 const modalBody     = select('.modal-body');
 const modalClose    = selectAll('.modal-close');
-const modalReload   = select('#modalReload');
+// const modalReload   = select('#modalReload');
 // Control btns
-const btnPaly       = select('#btnPlay');
+const btnPlay       = select('#btnPlay');
 const btnRefresh    = select('#btnRefresh');
 // Key sound 
 const soundOn       = select('.icon-sound-on');
@@ -182,6 +182,15 @@ class speedTyping {
                 piesocket.send('progress', data);
             }, 1000);
 
+            // because on keypress cannot detect backspace
+            input.addEventListener("keydown", event => {
+                // swallow "backspace" this key to prevent accident escape the page
+                if (event.keyCode === 8) {
+                    keyBeep.play();
+                    event.preventDefault();
+                }
+            });
+
             // Start the event listener
             input.addEventListener('keypress', event => {
                 // Prevent the default action 
@@ -263,6 +272,7 @@ class speedTyping {
             });
         }
     }
+
     // Stop the timer
     stop() {
         // Clear timer and set interval to null
@@ -273,9 +283,9 @@ class speedTyping {
         // Reset The Timer value to 0
         _timer.textContent = '0';
         // Remove the start btn 
-        btnPaly.remove();
+        btnPlay.hidden = true;
         // Remove the input area
-        input.remove();
+        input.hidden = true;
         // Set active class to Refresh btn
         btnRefresh.classList.add('active');
         // Show the full quote in the hidden div
@@ -348,11 +358,12 @@ class speedTyping {
         // Also close the modal when user clicks outside
         window.addEventListener('click', e => e.target === modal ? modal.style.display = 'none' : '');
         // Repeat the test btn
-        modalReload.addEventListener('click', () => location.reload());
+        // modalReload.addEventListener('click', () => location.reload());
         // Save the wpm values values to localStorage        
         // localStorage.setItem('WPM', wpm);
     }
 }
+
 // Init the class
 const typingTest = new speedTyping();
 
