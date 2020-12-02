@@ -82,12 +82,21 @@ const throttle = (func, limit) => {
         }, limit - (Date.now() - lastRan))
       }
     }
-  }
+}
+
+// set debouncer
+const throttleStats = throttle((data) => {
+    piesocket.send('progress', data);
+}, 1000);
 
 // speedTyping Class
 class speedTyping {
 
     constructor() {
+        this.reset();
+    }
+
+    reset() {
         this.index          = 0;        // Main index
         this.words          = 0;        // Completed words index
         this.errorIndex     = 0;        // Errors index
@@ -101,6 +110,8 @@ class speedTyping {
         this.typing         = false;    // To check if we are typing
         this.quote          = [];       // Quotes array
         this.author         = [];       // Authors array
+        this._inputKeydown  = null;     // Function pointer for event listener reset
+        this._inputKeypress = null;     // Function pointer for event listener reset
     }
     
     // Set the timer based on local time
@@ -177,100 +188,101 @@ class speedTyping {
             // Display the quotes in the input div
             input.textContent = this.quote;
 
-            // set debouncer
-            const throttleStats = throttle((data) => {
-                piesocket.send('progress', data);
-            }, 1000);
-
             // because on keypress cannot detect backspace
-            input.addEventListener("keydown", event => {
-                // swallow "backspace" this key to prevent accident escape the page
-                if (event.keyCode === 8) {
-                    keyBeep.play();
-                    event.preventDefault();
-                }
-            });
+            this._inputKeydown = this.inputKeydown.bind(this);
+            input.addEventListener("keydown", this._inputKeydown);
 
             // Start the event listener
-            input.addEventListener('keypress', event => {
-                // Prevent the default action 
-                event.preventDefault();
-                // Just in case
-                event = event || window.event;
-                // Get the pressed key code
-                const charCode = event.which || event.keyCode;
-                // Read it as a normal key
-                const charTyped = String.fromCharCode(charCode);
-                // Compare the pressed key to the quote letter
-                if (charTyped === this.quote.charAt(this.index)) {
-                    // Detect the spaces by white space " "  or key code is (32) - Double check maybe not necessarily 
-                    if (charTyped === " " && charCode === 32) {
-                        this.words++;
-                        // Display the written words
-                        _writtenWords.textContent = this.words;
-                    }
-                    // Increment the keys index
-                    this.index++;
-                    
-                    // Hold current quote
-                    const currentQuote = this.quote.substring(this.index, this.index + this.quote.length);
-       
-                    // Update the input div value when typing
-                    input.textContent = currentQuote;
-                    output.innerHTML += charTyped;
-                    // Increment the correct keys
-                    this.correctIndex++;
-                    // If index = the quote length, that means the text is done, call the finish() method
-                    if (this.index === this.quote.length) {
-                        this.stop();
-                        this.finish();
-                        return;
-                    }
-                    // Play typing sound if enabled
-                    if (sound) {
-                        keyClick.currentTime = 0;
-                        keyClick.play();
-                    }
-                } else {
-                    // Add the errors into the output div 
-                    output.innerHTML += `<span class="text-danger">${charTyped}</span>`;
-                    // Increment the wrong keys counter
-                    this.errorIndex++;
-                    // Add accuracy error counter to the dom
-                    _errors.textContent = this.errorIndex;
-                    // Decrement the correct keys counter
-                    this.correctIndex--;
-                    // Play typing sound if enabled
-                    if (sound) {
-                        keyBeep.currentTime = 0;
-                        keyBeep.play();
-                    }
-                }
-                // CPM counter
-                const rawcpm  = Math.floor(this.index / this.seconds * 60);
-                this.cpm = this.correctIndex > 5 ? Math.floor(this.correctIndex / this.seconds * 60) : 0;
-                // Add to the dom
-                _cpm.textContent = this.cpm;
-                // WPM: (correct chars / total time * 60 / 5)
-                this.wpm = Math.round(this.cpm / 5);
-                _wpm.textContent = this.wpm;
-                // Accuracy: (Correct chars * 100 / total index)
-                this.accuracyIndex = this.correctIndex > 5 ? Math.round((this.correctIndex * 100) / this.index) : 0;
-                // Add accuracy to the dom. We need to check it because division by 0 give us a special values (infinity, NaN)
-                if (this.accuracyIndex > 0 && Number.isInteger(this.accuracyIndex)) 
-                    _accuracy.innerHTML = `${this.accuracyIndex}<span class="small">%</span>`;
-
-                throttleStats({
-                    rawcpm: rawcpm,
-                    cpm: this.cpm,
-                    wpm: this.wpm,
-                    accuracy: this.accuracyIndex,
-                    seconds: this.seconds,
-                    typedIndex: this.index,
-                    quoteLength: this.quote.length,
-                });
-            });
+            this._inputKeypress = this.inputKeypress.bind(this);
+            input.addEventListener('keypress', this._inputKeypress);
         }
+    }
+
+    inputKeydown(event) {
+        // swallow "backspace" this key to prevent accident escape the page
+        if (event.keyCode === 8) {
+            keyBeep.play();
+            event.preventDefault();
+        }
+    }
+
+    inputKeypress(event) {
+        // Prevent the default action 
+        event.preventDefault();
+        // Just in case
+        event = event || window.event;
+        // Get the pressed key code
+        const charCode = event.which || event.keyCode;
+        // Read it as a normal key
+        const charTyped = String.fromCharCode(charCode);
+        // Compare the pressed key to the quote letter
+        if (charTyped === this.quote.charAt(this.index)) {
+            // Detect the spaces by white space " "  or key code is (32) - Double check maybe not necessarily 
+            if (charTyped === " " && charCode === 32) {
+                this.words++;
+                // Display the written words
+                _writtenWords.textContent = this.words;
+            }
+            // Increment the keys index
+            this.index++;
+            
+            // Hold current quote
+            const currentQuote = this.quote.substring(this.index, this.index + this.quote.length);
+
+            // Update the input div value when typing
+            input.textContent = currentQuote;
+            output.innerHTML += charTyped;
+            // Increment the correct keys
+            this.correctIndex++;
+            // If index = the quote length, that means the text is done, call the finish() method
+            if (this.index === this.quote.length) {
+                this.stop();
+                this.finish();
+                return;
+            }
+            // Play typing sound if enabled
+            if (sound) {
+                keyClick.currentTime = 0;
+                keyClick.play();
+            }
+        } else {
+            // Add the errors into the output div 
+            output.innerHTML += `<span class="text-danger">${charTyped}</span>`;
+            // Increment the wrong keys counter
+            this.errorIndex++;
+            // Add accuracy error counter to the dom
+            _errors.textContent = this.errorIndex;
+            // Decrement the correct keys counter
+            this.correctIndex--;
+            // Play typing sound if enabled
+            if (sound) {
+                keyBeep.currentTime = 0;
+                keyBeep.play();
+            }
+        }
+        // CPM counter
+        const rawcpm  = Math.floor(this.index / this.seconds * 60);
+        this.cpm = this.correctIndex > 5 ? Math.floor(this.correctIndex / this.seconds * 60) : 0;
+        // Add to the dom
+        _cpm.textContent = this.cpm;
+        // WPM: (correct chars / total time * 60 / 5)
+        this.wpm = Math.round(this.cpm / 5);
+        _wpm.textContent = this.wpm;
+        // Accuracy: (Correct chars * 100 / total index)
+        this.accuracyIndex = this.correctIndex > 5 ? Math.round((this.correctIndex * 100) / this.index) : 0;
+        // Add accuracy to the dom. We need to check it because division by 0 give us a special values (infinity, NaN)
+        if (this.accuracyIndex > 0 && Number.isInteger(this.accuracyIndex)) 
+            _accuracy.innerHTML = `${this.accuracyIndex}<span class="small">%</span>`;
+
+        throttleStats({
+            rawcpm: rawcpm,
+            cpm: this.cpm,
+            wpm: this.wpm,
+            accuracy: this.accuracyIndex,
+            seconds: this.seconds,
+            typedIndex: this.index,
+            quoteLength: this.quote.length,
+        });
     }
 
     // Stop the timer
@@ -362,15 +374,45 @@ class speedTyping {
         // Save the wpm values values to localStorage        
         // localStorage.setItem('WPM', wpm);
     }
+
+    refresh() {
+        input.removeEventListener('keydown', this._inputKeydown);
+        input.removeEventListener('keypress', this._inputKeypress);
+
+        clearInterval(this.interval);
+        this.interval = null;
+        this.reset();
+
+        // button and input trigger from start/stop
+        btnPlay.hidden = false;
+        input.hidden = false;
+        btnPlay.classList.remove('active');
+        btnRefresh.classList.remove('active');
+
+        input.textContent = "";
+        input.classList.remove('active');
+        output.innerHTML = '';
+        inputFull.innerHTML = '';
+        inputFull.classList.add('d-none');
+
+        // reset other ui
+        _timer.textContent = '0';
+        _wpm.textContent = '0';
+        _cpm.textContent = '0';
+        _errors.textContent = '0';
+        _accuracy.textContent = '0';
+        _totalWords.textContent = '0';
+        _writtenWords.textContent = '0';
+    }
 }
 
 // Init the class
 const typingTest = new speedTyping();
 
 // Start the test when Start btn clicked
-btnPaly.addEventListener('click', () => typingTest.start());
+btnPlay.addEventListener('click', () => typingTest.start());
 // Reload the page when Refresh btn is clicked
-btnRefresh.addEventListener('click', () => location.reload());
+btnRefresh.addEventListener('click', () => typingTest.refresh());
 
 // Save last wpm result to Local storage
 // const savedWPM = localStorage.getItem('WPM') || 0;
