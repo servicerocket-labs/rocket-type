@@ -376,6 +376,8 @@ class speedTyping {
     }
 
     refresh() {
+        piesocket.send('refresh', {});
+
         input.removeEventListener('keydown', this._inputKeydown);
         input.removeEventListener('keypress', this._inputKeypress);
 
