@@ -324,6 +324,9 @@ class speedTyping {
         modal.style.display = 'block';
         const wpm = this.wpm;
         let result = '';
+        
+        const _level = document.getElementById('level');
+        const meta_message = `The quote level is <strong>${_level.value}</strong>`
         const message = `Your typing speed is <strong>${wpm}</strong> WPM which equals <strong>${this.cpm}</strong> CPM. You've made a <strong>${this.errorIndex}</strong> mistakes with <strong>${this.accuracyIndex}%</strong> total accuracy.`;
 
         if (wpm > 5 && wpm < 20) {
@@ -331,6 +334,7 @@ class speedTyping {
                 <div class="modal-icon my-3"><img src="img/sleeping.svg" class="media-object"></div>
                 <div class="media-body p-2">
                     <h4 class="media-heading">So Slow!</h4>
+                    <p class="lead pt-2">${meta_message}</p>
                     <p class="lead pt-2">${message} You should do more practice!</p>
                 </div>`
         } else if (wpm > 20 && wpm < 40) {
@@ -338,6 +342,7 @@ class speedTyping {
                 <div class="modal-icon my-3"><img src="img/thinking.svg" class="media-object"></div>
                 <div class="media-body p-2">
                     <h4 class="media-heading">About Average!</h4>
+                    <p class="lead pt-2">${meta_message}</p>
                     <p class="lead pt-2">${message} You can do better!</p>
                 </div>`
         } else if (wpm > 40 && wpm < 60) {
@@ -345,6 +350,7 @@ class speedTyping {
                 <div class="modal-icon my-3"><img src="img/surprised.svg" class="media-object"></div>
                 <div class="media-body p-2">
                     <h4 class="media-heading">Great Job!</h4>
+                    <p class="lead pt-2">${meta_message}</p>
                     <p class="lead pt-2">${message} You're doing great!</p>
                 </div>`
         } else if (wpm > 60) {
@@ -352,6 +358,7 @@ class speedTyping {
                 <div class="modal-icon my-3"><img src="img/shocked.svg" class="media-object"></div>
                 <div class="media-body p-2">
                     <h4 class="media-heading">Insane!</h4>
+                    <p class="lead pt-2">${meta_message}</p>
                     <p class="lead pt-2">${message} You're are Awesome!</p>
                 </div>`
         } else {
@@ -359,6 +366,7 @@ class speedTyping {
                 <div class="modal-icon my-3"><img src="img/smart.svg" class="media-object"></div>
                 <div class="media-body p-2">
                     <h4 class="media-heading">Hmmm!</h4>
+                    <p class="lead pt-2">${meta_message}</p>
                     <p class="lead pt-2">Please stop playing around and start typing!</p>
                 </div>`
         }
