@@ -49,7 +49,8 @@ async function connect(config, cid, player) {
         return;
 
     const obj = players[player] = {};
-    obj.socket = new WebSocket(`wss://connect.websocket.in/v3/${channelId}?api_key=${apiKey}`);
+    // obj.socket = new WebSocket(`wss://connect.websocket.in/v3/${channelId}?api_key=${apiKey}`);
+    obj.socket = new WebSocket(`ws://localhost:8081`);
 
     const _btn = document.getElementById(player + 'Btn');
     const _logs = document.getElementById(player + 'Logs');
@@ -71,7 +72,10 @@ async function connect(config, cid, player) {
 
     let quote = ''
     obj.socket.onmessage = (message) => {
-        var payload = JSON.parse(message.data);
+        console.log('Received by dashboard')
+        console.log(message);
+        console.log(message.data);
+        var payload = JSON.parse(message.data.toString());
         if (payload.error) {
             alert(payload.error);
             return;
