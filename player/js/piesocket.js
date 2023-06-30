@@ -40,7 +40,7 @@ async function connect(config, cid) {
     const _connectBtn = document.getElementById('connectBtn');
 
     // socket = new WebSocket(`wss://connect.websocket.in/v3/${channelId}?api_key=${apiKey}`);
-    socket = new WebSocket(`ws://localhost:8081`);
+    socket = new WebSocket(`ws://localhost:8081/${channelId}`);
 
     socket.onopen = () => {
         console.log('connected to piesocket!');

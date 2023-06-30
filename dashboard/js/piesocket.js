@@ -50,7 +50,7 @@ async function connect(config, cid, player) {
 
     const obj = players[player] = {};
     // obj.socket = new WebSocket(`wss://connect.websocket.in/v3/${channelId}?api_key=${apiKey}`);
-    obj.socket = new WebSocket(`ws://localhost:8081`);
+    obj.socket = new WebSocket(`ws://localhost:8081/${cid}`);
 
     const _btn = document.getElementById(player + 'Btn');
     const _logs = document.getElementById(player + 'Logs');
