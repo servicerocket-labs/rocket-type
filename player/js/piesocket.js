@@ -74,6 +74,9 @@ async function connect(config, cid) {
         console.log(payload);
 
         if (payload.event == 'quote') {
+
+            console.log('quote received!');
+            console.log(payload);
             _quoteBtn.classList.remove('d-none');
             window.quote = {
                 text: payload.text,
